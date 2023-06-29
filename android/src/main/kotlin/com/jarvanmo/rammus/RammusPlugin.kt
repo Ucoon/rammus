@@ -462,8 +462,21 @@ class RammusPlugin(private val registrar: Registrar, private val methodChannel: 
                 val mChannel = NotificationChannel(id as String, name as String, importance as Int)
                 // 配置通知渠道的属性
                 mChannel.description = description as String
+                // 设置通知出现时声音，默认通知是有声音的
+                val att = AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                        .build()
+                val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                mChannel.setSound(defaultSoundUri, att)
+                // 设置通知出现时的闪灯（如果 android 设备支持的话）
                 mChannel.enableLights(true)
+                mChannel.lightColor = Color.RED
+                // 设置通知出现时的震动（如果 android 设备支持的话）
                 mChannel.enableVibration(true)
+                mChannel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
+                mChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+                mChannel.setShowBadge(true)
                 notificationChannels.add(mChannel)
             }
             if (notificationChannels.isNotEmpty()){
